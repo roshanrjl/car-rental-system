@@ -144,8 +144,8 @@ class carSystem {
     }
 
     public void menu() {
-        Scanner scanner = new Scanner(System.in);
-        while (true) {
+        try (Scanner scanner = new Scanner(System.in)) {
+            while (true) {
             System.out.println("==welcome to car rental system==");
             System.out.println("1. rent a car");
             System.out.println("2. return a car");
@@ -200,10 +200,45 @@ class carSystem {
                     } else {
                         System.out.println("Rental cancelled.");
                     }
-                } else {
+                }
+                 else {
                     System.out.println("Car not found or not available.");
                 }
+            } else if (choice == 2) {
+                System.out.println("==Return a car==");
+                System.out.println("Enter car id you want to return: ");
+                String carId = scanner.nextLine();
+                Car cartoreturn = null;
+                for (Car car : cars) {
+                    if (car.getCarId().equals(carId) && !car.getIsAvailable()) {
+                        cartoreturn = car;
+                        break;
+                    }
+                }
+                Customer customer = null;
+                if(cartoreturn!=null){
+                    for(Rental rental: rentals){
+                        if(rental.getCar()==cartoreturn){
+                            customer = rental.getCustomer();
+                            break;
+                        }
+                    }
+                }
+                if(customer!=null){
+                    returnCar(cartoreturn);
+                    System.out.println("Car returned successfully." + customer.getCustomerName());
+                }
+                else{
+                    System.out.println("Car not found in the rental list.");
+                }
+            } else if (choice == 3) {
+                break;
+
+            }else{
+                System.out.println("Invalid choice.please enter a valid choice.");
             }
+            }
+            System.out.println("Thank you for using the car rental system.");
         }
 
     }
@@ -213,10 +248,15 @@ public class carRentalSystem {
 
     public static void main(String[] args) {
         System.out.println("Welcome to the Car Rental System!");
-        // Initialize the system and start the application
+        carSystem carsystem = new carSystem();
+        Car car1 = new Car("CAR", "Toyota", "Corolla", 100);
+        Car car2 = new Car("CAR", "Honda", "Civic", 120);
+        Car car3 = new Car("CAR", "Suzuki", "Swift", 80);
+        carsystem.addcar(car1);
+        carsystem.addcar(car2);
+        carsystem.addcar(car3);
+        carsystem.menu();
+        
     }
-
-    // Add methods and classes to handle car rentals, returns, and other
-    // functionalities
 
 }
